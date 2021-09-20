@@ -1,4 +1,5 @@
 var express = require("express");
+var dataService = require("./data-service.js");
 var path = require("path");
 
 //Creating app with express module
