@@ -1,9 +1,9 @@
 var express = require("express");
 var path = require("path");
-app.use(express.static('public'));
 
 //Creating app with express module
 var app = express();
+app.use(express.static('public'));
 
 //Creating port
 var PORT = process.env.PORT || 8080;
