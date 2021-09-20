@@ -13,11 +13,11 @@ function onStart() {
 }
 
 app.get("/", function(req, res) {
-    response.sendFile(path.join(__dirname, "/views/home.html"));
+    res.sendFile(path.join(__dirname, "/views/home.html"));
 });
 
 app.get("/about", function(req, res) {
-    response.sendFile(path.join(__dirname, "/views/about.html"));
+    res.sendFile(path.join(__dirname, "/views/about.html"));
 });
 
 //Starting app
