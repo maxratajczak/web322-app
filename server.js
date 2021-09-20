@@ -8,9 +8,6 @@ app.use(express.static('public'));
 //Creating port
 var PORT = process.env.PORT || 8080;
 
-//Starting app
-app.listen(PORT, onStart);
-
 function onStart() {
     console.log("Express http server listening on " + PORT);
 }
@@ -22,5 +19,8 @@ app.get("/", function(req, res) {
 app.get("/about", function(req, res) {
     response.sendFile(path.join(__dirname, "/views/about.html"));
 });
+
+//Starting app
+app.listen(PORT, onStart);
 
 
