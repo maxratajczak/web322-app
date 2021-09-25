@@ -10,7 +10,7 @@ module.exports = {
     initialize: function() {
         return new Promise((resolve, reject) => {
 
-            fs.readFile('./data/employees.json', 'utf8', (err, data) => { //Reading from employee file
+            fs.readFile('./data/employees.json', 'utf8', (err, data) => { //Reading from file
                 if (err) reject("Unable to read file"); //If error, send error to promise
                 
                 let obj = JSON.parse(data); //Parse read file string to an object
@@ -20,16 +20,17 @@ module.exports = {
                 });
             });
 
-            fs.readFile('./data/departments.json', 'utf8', (err, data) => { //Reading from departments file
-                if (err) reject("Unable to read file"); //If error, send error to promise
+            fs.readFile('./data/departments.json', 'utf8', (err, data) => {
+                if (err) reject("Unable to read file");
 
-                let obj = JSON.parse(data); //Parse read file string to an object
+                let obj1 = JSON.parse(data);
                 
-                obj.forEach(element => {
-                    departments.push(element); //Push object into new array
+                obj1.forEach(element => {
+                    departments.push(element);
                 });
             });
-            resolve("Success!");
+
+            resolve("Reading from files was successful!");
         });
     },
 
@@ -48,6 +49,7 @@ module.exports = {
             employees.forEach(element => {
                 if(element.isManager === true) managers.push(element);
             });
+
             resolve(managers);
         });
     },

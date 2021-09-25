@@ -1,5 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
 
 * {
-    font-family: 'Hind Siliguri', sans-serif;
+    font-family: 'Heebo', sans-serif;
+}
+
+#nav-title{
+    color: rgb(109, 91, 212);
+}
+
+#main-404-container h1{
+    padding: 0;
+    margin: 20vh 0 0 0;
+}
+
+#main-404-container h3 {
+    margin: 2vh 0 0 0;
+    padding: 0;
+}
+
+#main-404-container{
+    text-align: center;
+    font-family: 'VT323', monospace;
 }
