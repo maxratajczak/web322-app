@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nova+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 * {
     font-family: 'Heebo', sans-serif;
@@ -19,7 +19,7 @@
 }
 
 .glitch, .glitch span, #error-404-desc {
-    font-family: monospace;
+    font-family: 'Roboto Mono', monospace;
     
 }
 
