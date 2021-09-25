@@ -5,7 +5,7 @@ const dataService = require("./data-service.js");
 
 //Creating app with express module
 var app = express();
-app.use(express.static('public'));
+app.use(express.static('/public/'));
 
 //Creating port
 var PORT = process.env.PORT || 8080;
