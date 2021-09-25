@@ -1,6 +1,7 @@
-var express = require("express");
-var dataService = require("./data-service.js");
-var path = require("path");
+const { json } = require("express");
+const express = require("express");
+const path = require("path");
+const dataService = require("./data-service.js");
 
 //Creating app with express module
 var app = express();
@@ -11,7 +12,13 @@ var PORT = process.env.PORT || 8080;
 
 function onStart() {
     console.log("Express http server listening on " + PORT);
-    console.log(typeof employeeJSON);
+
+    dataService.initialize().then((data) => {
+        console.log(data);
+    }).catch((err) => {
+        throw err;
+    });
+    
 }
 
 app.get("/", function(req, res) {
@@ -22,23 +29,33 @@ app.get("/about", function(req, res) {
     res.sendFile(path.join(__dirname, "/views/about.html"));
 });
 
-var employeeJSON = require("./data/employees.json");
 app.get("/employees", function(req, res) {
-    res.send(employeeJSON);
+    dataService.getAllEmployees().then((employees) => {
+        res.json(employees);
+    }).catch((err) => {
+        res.json(err);
+    });
 });
 
 app.get("/managers", function(req, res) {
-    //var obj = JSON.parse(employeeJSON);
-    console.log(employeeJSON);
+    dataService.getAllManagers().then((managers) => {
+        res.json(managers);
+    }).catch((err) => {
+        res.json(err);
+    });
 });
 
-var departmentsJSON = require("./data/departments.json");
-const { type } = require("os");
 app.get("/departments", function(req, res) {
-    res.send(departmentsJSON);
+    dataService.getAllDepartments().then((departments) => {
+        res.json(departments);
+    }).catch((err) => {
+        res.json(err);
+    });
 });
 
-//Starting app
-app.listen(PORT, onStart);
-
+app.listen(PORT, dataService.initialize().then(() => {
+    onStart();
+}).catch((err) => {
+    console.log(err);
+}));
 
