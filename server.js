@@ -8,6 +8,7 @@
 * ********************************************************************************/
 
 const express = require("express");
+const multer = require("multer");
 const path = require("path");
 const dataService = require("./data-service.js");
 
@@ -52,6 +53,14 @@ app.get("/departments", function(req, res) {
     }).catch((err) => {
         res.json(err);
     });
+});
+
+app.get("/employees/add", function(req, res) {
+    res.sendFile(path.join(__dirname, "/views/addEmployee.html"));
+});
+
+app.get("/images/add", function(req, res) {
+    res.sendFile(path.join(__dirname, "/views/addImage.html"));
 });
 
 //Handling any invalid route
