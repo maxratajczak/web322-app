@@ -1,0 +1,196 @@
+[33mcommit 66d29cf5d2700086ae3856cb489cf21f35d2106b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Max Ratajczak <75450072+maxratajczak@users.noreply.github.com>
+Date:   Thu Sep 30 19:43:06 2021 -0400
+
+    Assignment 3 Start
+
+[1mdiff --git a/node_modules/.bin/mkdirp b/node_modules/.bin/mkdirp[m
+[1mnew file mode 100644[m
+[1mindex 0000000..bcd333f[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/.bin/mkdirp[m
+[36m@@ -0,0 +1,15 @@[m
+[32m+[m[32m#!/bin/sh[m
+[32m+[m[32mbasedir=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")[m
+[32m+[m
+[32m+[m[32mcase `uname` in[m
+[32m+[m[32m    *CYGWIN*|*MINGW*|*MSYS*) basedir=`cygpath -w "$basedir"`;;[m
+[32m+[m[32mesac[m
+[32m+[m
+[32m+[m[32mif [ -x "$basedir/node" ]; then[m
+[32m+[m[32m  "$basedir/node"  "$basedir/../mkdirp/bin/cmd.js" "$@"[m
+[32m+[m[32m  ret=$?[m
+[32m+[m[32melse[m[41m [m
+[32m+[m[32m  node  "$basedir/../mkdirp/bin/cmd.js" "$@"[m
+[32m+[m[32m  ret=$?[m
+[32m+[m[32mfi[m
+[32m+[m[32mexit $ret[m
+[1mdiff --git a/node_modules/.bin/mkdirp.cmd b/node_modules/.bin/mkdirp.cmd[m
+[1mnew file mode 100644[m
+[1mindex 0000000..c2c9350[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/.bin/mkdirp.cmd[m
+[36m@@ -0,0 +1,17 @@[m
+[32m+[m[32m@ECHO off[m
+[32m+[m[32mSETLOCAL[m
+[32m+[m[32mCALL :find_dp0[m
+[32m+[m
+[32m+[m[32mIF EXIST "%dp0%\node.exe" ([m
+[32m+[m[32m  SET "_prog=%dp0%\node.exe"[m
+[32m+[m[32m) ELSE ([m
+[32m+[m[32m  SET "_prog=node"[m
+[32m+[m[32m  SET PATHEXT=%PATHEXT:;.JS;=;%[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32m"%_prog%"  "%dp0%\..\mkdirp\bin\cmd.js" %*[m
+[32m+[m[32mENDLOCAL[m
+[32m+[m[32mEXIT /b %errorlevel%[m
+[32m+[m[32m:find_dp0[m
+[32m+[m[32mSET dp0=%~dp0[m
+[32m+[m[32mEXIT /b[m
+[1mdiff --git a/node_modules/.bin/mkdirp.ps1 b/node_modules/.bin/mkdirp.ps1[m
+[1mnew file mode 100644[m
+[1mindex 0000000..35ce690[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/.bin/mkdirp.ps1[m
+[36m@@ -0,0 +1,18 @@[m
+[32m+[m[32m#!/usr/bin/env pwsh[m
+[32m+[m[32m$basedir=Split-Path $MyInvocation.MyCommand.Definition -Parent[m
+[32m+[m
+[32m+[m[32m$exe=""[m
+[32m+[m[32mif ($PSVersionTable.PSVersion -lt "6.0" -or $IsWindows) {[m
+[32m+[m[32m  # Fix case when both the Windows and Linux builds of Node[m
+[32m+[m[32m  # are installed in the same directory[m
+[32m+[m[32m  $exe=".exe"[m
+[32m+[m[32m}[m
+[32m+[m[32m$ret=0[m
+[32m+[m[32mif (Test-Path "$basedir/node$exe") {[m
+[32m+[m[32m  & "$basedir/node$exe"  "$basedir/../mkdirp/bin/cmd.js" $args[m
+[32m+[m[32m  $ret=$LASTEXITCODE[m
+[32m+[m[32m} else {[m
+[32m+[m[32m  & "node$exe"  "$basedir/../mkdirp/bin/cmd.js" $args[m
+[32m+[m[32m  $ret=$LASTEXITCODE[m
+[32m+[m[32m}[m
+[32m+[m[32mexit $ret[m
+[1mdiff --git a/node_modules/append-field/.npmignore b/node_modules/append-field/.npmignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..c2658d7[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/append-field/.npmignore[m
+[36m@@ -0,0 +1 @@[m
+[32m+[m[32mnode_modules/[m
+[1mdiff --git a/node_modules/append-field/LICENSE b/node_modules/append-field/LICENSE[m
+[1mnew file mode 100644[m
+[1mindex 0000000..14b1f89[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/append-field/LICENSE[m
+[36m@@ -0,0 +1,21 @@[m
+[32m+[m[32mThe MIT License (MIT)[m
+[32m+[m
+[32m+[m[32mCopyright (c) 2015 Linus Unnebäck[m
+[32m+[m
+[32m+[m[32mPermission is hereby granted, free of charge, to any person obtaining a copy[m
+[32m+[m[32mof this software and associated documentation files (the "Software"), to deal[m
+[32m+[m[32min the Software without restriction, including without limitation the rights[m
+[32m+[m[32mto use, copy, modify, merge, publish, distribute, sublicense, and/or sell[m
+[32m+[m[32mcopies of the Software, and to permit persons to whom the Software is[m
+[32m+[m[32mfurnished to do so, subject to the following conditions:[m
+[32m+[m
+[32m+[m[32mThe above copyright notice and this permission notice shall be included in all[m
+[32m+[m[32mcopies or substantial portions of the Software.[m
+[32m+[m
+[32m+[m[32mTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR[m
+[32m+[m[32mIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,[m
+[32m+[m[32mFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE[m
+[32m+[m[32mAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER[m
+[32m+[m[32mLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,[m
+[32m+[m[32mOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE[m
+[32m+[m[32mSOFTWARE.[m
+[1mdiff --git a/node_modules/append-field/README.md b/node_modules/append-field/README.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..62b901b[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/append-field/README.md[m
+[36m@@ -0,0 +1,44 @@[m
+[32m+[m[32m# `append-field`[m
+[32m+[m
+[32m+[m[32mA [W3C HTML JSON forms spec](http://www.w3.org/TR/html-json-forms/) compliant[m
+[32m+[m[32mfield appender (for lack of a better name). Useful for people implementing[m
+[32m+[m[32m`application/x-www-form-urlencoded` and `multipart/form-data` parsers.[m
+[32m+[m
+[32m+[m[32mIt works best on objects created with `Object.create(null)`. Otherwise it might[m
+[32m+[m[32mconflict with variables from the prototype (e.g. `hasOwnProperty`).[m
+[32m+[m
+[32m+[m[32m## Installation[m
+[32m+[m
+[32m+[m[32m```sh[m
+[32m+[m[32mnpm install --save append-field[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Usage[m
+[32m+[m
+[32m+[m[32m```javascript[m
+[32m+[m[32mvar appendField = require('append-field')[m
+[32m+[m[32mvar obj = Object.create(null)[m
+[32m+[m
+[32m+[m[32mappendField(obj, 'pets[0][species]', 'Dahut')[m
+[32m+[m[32mappendField(obj, 'pets[0][name]', 'Hypatia')[m
+[32m+[m[32mappendField(obj, 'pets[1][species]', 'Felis Stultus')[m
+[32m+[m[32mappendField(obj, 'pets[1][name]', 'Billie')[m
+[32m+[m
+[32m+[m[32mconsole.log(obj)[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m```text[m
+[32m+[m[32m{ pets:[m
+[32m+[m[32m   [ { species: 'Dahut', name: 'Hypatia' },[m
+[32m+[m[32m     { species: 'Felis Stultus', name: 'Billie' } ] }[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## API[m
+[32m+[m
+[32m+[m[32m### `appendField(store, key, value)`[m
+[32m+[m
+[32m+[m[32mAdds the field named `key` with the value `value` to the object `store`.[m
+[32m+[m
+[32m+[m[32m## License[m
+[32m+[m
+[32m+[m[32mMIT[m
+[1mdiff --git a/node_modules/append-field/index.js b/node_modules/append-field/index.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..fc5acc8[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/append-field/index.js[m
+[36m@@ -0,0 +1,12 @@[m
+[32m+[m[32mvar parsePath = require('./lib/parse-path')[m
+[32m+[m[32mvar setValue = require('./lib/set-value')[m
+[32m+[m
+[32m+[m[32mfunction appendField (store, key, value) {[m
+[32m+[m[32m  var steps = parsePath(key)[m
+[32m+[m
+[32m+[m[32m  steps.reduce(function (context, step) {[m
+[32m+[m[32m    return setValue(context, step, context[step.key], value)[m
+[32m+[m[32m  }, store)[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mmodule.exports = appendField[m
+[1mdiff --git a/node_modules/append-field/lib/parse-path.js b/node_modules/append-field/lib/parse-path.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..31d6179[m
+[1m--- /dev/null[m
+[1m+++ b/node_modules/append-field/lib/parse-path.js[m
+[36m@@ -0,0 +1,53 @@[m
+[32m+[m[32mvar reFirstKey = /^[^\[]*/[m
+[32m+[m[32mvar reDigitPath = /^\[(\d+)\]/[m
+[32m+[m[32mvar reNormalPath = /^\[([^\]]+)\]/[m
+[32m+[m
+[32m+[m[32mfunction parsePath (key) {[m
+[32m+[m[32m  function failure () {[m
+[32m+[m[32m    return [{ type: 'object', key: key, last: true }][m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  var firstKey = reFirstKey.exec(key)[0][m
+[32m+[m[32m  if (!firstKey) return failure()[m
+[32m+[m
+[32m+[m[32m  var len = key.length[m
+[32m+[m[32m  var pos = firstKey.len
