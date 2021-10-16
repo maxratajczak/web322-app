@@ -1,6 +1,7 @@
 const fs = require('fs');
 const employeeJSON = require("./data/employees.json");
 const departmentsJSON = require("./data/departments.json");
+const { resolve } = require('path');
 
 var employees = [];
 var departments = [];
@@ -29,7 +30,6 @@ module.exports = {
                     departments.push(element);
                 });
             });
-
             resolve("Reading from files was successful!");
         });
     },
@@ -49,7 +49,6 @@ module.exports = {
             employees.forEach(element => {
                 if(element.isManager === true) managers.push(element);
             });
-
             resolve(managers);
         });
     },
@@ -58,6 +57,70 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (departments.length === 0) reject("No results returned from departments.");
             resolve(departments);
+        });
+    },
+
+    addEmployee: function(employeeData) {
+        return new Promise((resolve, reject) => {
+            try {
+                if(employeeData.isManager === undefined) employeeData.isManager = false;
+                else employeeData.isManager = true;
+    
+                employeeData.employeeNum = employees.length + 1;
+                employees.push(employeeData);
+                resolve();
+            }
+            catch(err) {
+                reject("Error Adding Employee");
+            }
+        });
+    },
+
+    getEmployeesByStatus: function(status) {
+        return new Promise((resolve, reject) => {
+            var filteredEmployees = [];
+            employees.forEach(element => {
+                if(element.status === status) filteredEmployees.push(element);
+            });
+
+            if (filteredEmployees.length === 0) reject({message: "No Results Returned"});
+            else resolve(filteredEmployees);
+        });
+    },
+
+    getEmployeesByDepartment: function(department) {
+        return new Promise((resolve, reject) => {
+            var filteredEmployees = [];
+            employees.forEach(element => {
+                if(element.department === parseInt(department)) filteredEmployees.push(element);
+            });
+
+            if (filteredEmployees.length === 0) reject({message: "No Results Returned"});
+            else resolve(filteredEmployees);
+        });
+    },
+
+    getEmployeesByManager: function(manager) {
+        return new Promise((resolve, reject) => {
+            var filteredEmployees = [];
+            employees.forEach(element => {
+                if(element.employeeManagerNum === parseInt(manager)) filteredEmployees.push(element);
+            });
+
+            if (filteredEmployees.length === 0) reject({message: "No Results Returned"});
+            else resolve(filteredEmployees);
+        });
+    },
+
+    getEmployeeByNum: function(num) {
+        return new Promise((resolve, reject) => {
+            var employee = {};
+            employees.forEach(element => {
+                if(element.employeeNum === parseInt(num)) employee = element;
+            });
+
+            if (!employee.employeeNum) reject({message: "No Result Returned"});
+            else resolve(employee);
         });
     }
 
