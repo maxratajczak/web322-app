@@ -1,11 +1,14 @@
 /*********************************************************************************
-* WEB322 – Assignment 02
+* WEB322 – Assignment 03
 * I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part
 * of this assignment has been copied manually or electronically from any other source
-* (including 3rd party web sites) or distributed to other students. *
-* Name: Max Ratajczak Student ID: 100153204 Date: 2021-09-25 *
+* (including 3rd party web sites) or distributed to other students.
+*
+* Name: Max Ratajczak Student ID: 100153204 Date: October 15, 2021
+*
 * Online (Heroku) Link: https://obscure-citadel-32081.herokuapp.com/
-* ********************************************************************************/
+*
+********************************************************************************/
 
 const fs = require('fs');
 const express = require("express");
@@ -25,7 +28,6 @@ function onStart() {
 }
 
 //Multer file handling
-
 const storage = multer.diskStorage({
     destination: "public/images/uploaded",
     filename: function(req, file, cb) {
@@ -124,7 +126,7 @@ app.get("/images", function(req, res) {
 
     fs.readdir(__dirname + "/public/images/uploaded", function(err, items) {
         var imageObj = {};
-        let imageArray = [];
+        var imageArray = [];
         items.forEach(element => {
             imageArray.push(element);
         });

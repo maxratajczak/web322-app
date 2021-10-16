@@ -11,13 +11,13 @@ module.exports = {
     initialize: function() {
         return new Promise((resolve, reject) => {
 
-            fs.readFile('./data/employees.json', 'utf8', (err, data) => { //Reading from file
-                if (err) reject("Unable to read file"); //If error, send error to promise
+            fs.readFile('./data/employees.json', 'utf8', (err, data) => {
+                if (err) reject("Unable to read file");
                 
-                let obj = JSON.parse(data); //Parse read file string to an object
+                let obj = JSON.parse(data);
                 
                 obj.forEach(element => {
-                    employees.push(element); //Push object into new array
+                    employees.push(element);
                 });
             });
 
