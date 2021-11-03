@@ -67,6 +67,7 @@ module.exports = {
                 else employeeData.isManager = true;
     
                 employeeData.employeeNum = employees.length + 1;
+                employeeData.department = parseInt(employeeData.department);
                 employees.push(employeeData);
                 resolve();
             }
@@ -121,6 +122,29 @@ module.exports = {
 
             if (!employee.employeeNum) reject({message: "No Result Returned"});
             else resolve(employee);
+        });
+    },
+
+    updateEmployee: function(employeeData) {
+        return new Promise((resolve, reject) => {
+
+            employees.forEach(element => {
+                if(element.employeeNum === parseInt(employeeData.employeeNum)) {
+
+                    element.firstName = employeeData.firstName;
+                    element.lastName = employeeData.lastName;
+                    element.email = employeeData.email;
+                    element.addressStreet = employeeData.addressStreet;
+                    element.addressCity = employeeData.addressCity;
+                    element.addressState = employeeData.addressState;
+                    element.addressPostal = employeeData.addressPostal;
+                    element.isManager = employeeData.isManager;
+                    element.employeeManagerNum = employeeData.employeeManagerNum;
+                    element.status = employeeData.status;
+                    element.department = parseInt(employeeData.department);
+                }
+            });
+            resolve();
         });
     }
 
