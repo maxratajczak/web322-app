@@ -1,10 +1,10 @@
 /*********************************************************************************
-* WEB322 – Assignment 05
+* WEB322 – Assignment 06
 * I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part of this
 * assignment has been copied manually or electronically from any other source (including web sites) or
 * distributed to other students.
 *
-* Name: Max Ratajczak Student ID: 100153204 Date: November 13, 2021
+* Name: Max Ratajczak Student ID: 100153204 Date: November 31, 2021
 *
 * Online (Heroku) Link: https://obscure-citadel-32081.herokuapp.com/
 *
@@ -15,14 +15,23 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const dataService = require("./data-service.js");
+const dataServiceAuth = require("./data-service-auth.js");
 const bodyParser = require("body-parser");
 const exphbs = require("express-handlebars");
+const clientSessions = require("client-sessions");
 
 var app = express();
 app.use(express.static(__dirname + '/public/'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', '.hbs');
 
+app.use(clientSessions({
+    cookieName: "session",
+    secret: "web322assignment6secretcookiecode",
+    duration: 2 * 60 * 100,
+    activeDuration: 1000 * 60
+}));
+
+app.set('view engine', '.hbs');
 app.engine('.hbs', exphbs({
     extname: '.hbs',
     helpers: {
@@ -58,6 +67,19 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage: storage});
 
+function ensureLogin(req, res, next) {
+    if (!req.session.user) {
+      res.redirect("/login");
+    } else {
+      next();
+    }
+  }
+
+app.use(function(req, res, next) { 
+    res.locals.session = req.session;
+    next();
+});
+
 app.use(function(req,res,next){
     let route = req.baseUrl + req.path;
     app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/, "");
@@ -73,7 +95,7 @@ app.get("/about", function(req, res) {
 });
 
 /***** EMPLOYEES *****/
-app.get("/employees", function(req, res) {
+app.get("/employees", ensureLogin, function(req, res) {
     if(req.query.status) {
         dataService.getEmployeesByStatus(req.query.status)
         .then((empArray) => {
@@ -130,7 +152,7 @@ app.get("/employees", function(req, res) {
     }
 });
 
-app.get("/employee/:empNum", (req, res) => {
+app.get("/employee/:empNum", ensureLogin, (req, res) => {
 	// initialize an empty object to store the values
 	let viewData = {};
 	dataService.getEmployeeByNum(req.params.empNum).then((data) => {
@@ -165,7 +187,7 @@ app.get("/employee/:empNum", (req, res) => {
 		});
 });
 
-app.get("/employees/add", function(req, res) {
+app.get("/employees/add", ensureLogin, function(req, res) {
     dataService.getAllDepartments()
     .then((data) => {
         res.render(path.join(__dirname, "/views/addEmployee.hbs"), {departments: data});
@@ -175,7 +197,7 @@ app.get("/employees/add", function(req, res) {
     
 });
 
-app.post("/employees/add", function(req, res) {
+app.post("/employees/add", ensureLogin, function(req, res) {
     dataService.addEmployee(req.body)
     .then(() => {
         res.redirect("/employees");
@@ -184,7 +206,7 @@ app.post("/employees/add", function(req, res) {
     });
 });
 
-app.post("/employee/update", (req, res) => {
+app.post("/employee/update", ensureLogin, (req, res) => {
     dataService.updateEmployee(req.body)
     .then(() => {
         res.redirect("/employees");
@@ -193,7 +215,7 @@ app.post("/employee/update", (req, res) => {
     });
 });
 
-app.get("/employees/delete/:empNum", function(req, res) {
+app.get("/employees/delete/:empNum", ensureLogin, function(req, res) {
     dataService.deleteEmployeeByNum(req.params.empNum)
     .then(() => {
         res.redirect("/employees");
@@ -204,7 +226,7 @@ app.get("/employees/delete/:empNum", function(req, res) {
 /*********************/
 
 /***** DEPARTMENTS *****/
-app.get("/departments", function(req, res) {
+app.get("/departments", ensureLogin, function(req, res) {
     dataService.getAllDepartments()
     .then((departments) => {
         if (departments.length != 0) {
@@ -219,11 +241,11 @@ app.get("/departments", function(req, res) {
     });
 });
 
-app.get("/departments/add", function(req, res) {
+app.get("/departments/add", ensureLogin, function(req, res) {
     res.render(path.join(__dirname, "/views/addDepartment.hbs"));
 });
 
-app.post("/departments/add", function(req, res) {
+app.post("/departments/add", ensureLogin, function(req, res) {
     dataService.addDepartment(req.body)
     .then(() => {
         res.redirect("/departments");
@@ -232,7 +254,7 @@ app.post("/departments/add", function(req, res) {
     });
 });
 
-app.post("/department/update", (req, res) => {
+app.post("/department/update", ensureLogin, (req, res) => {
     dataService.updateDepartment(req.body)
     .then(() => {
         res.redirect("/departments");
@@ -241,7 +263,7 @@ app.post("/department/update", (req, res) => {
     });
 });
 
-app.get("/department/:departmentId", function(req, res) {
+app.get("/department/:departmentId", ensureLogin, function(req, res) {
     dataService.getDepartmentById(req.params.departmentId)
     .then((departmentData) => {
         if (departmentData.length != 0) {
@@ -255,7 +277,7 @@ app.get("/department/:departmentId", function(req, res) {
     });
 });
 
-app.get("/departments/delete/:departmentId", function(req, res) {
+app.get("/departments/delete/:departmentId", ensureLogin, function(req, res) {
     dataService.deleteDepartmentById(req.params.departmentId)
     .then(() => {
         res.redirect("/departments");
@@ -266,15 +288,15 @@ app.get("/departments/delete/:departmentId", function(req, res) {
 /***********************/
 
 /***** IMAGES *****/
-app.get("/images/add", function(req, res) {
+app.get("/images/add", ensureLogin, function(req, res) {
     res.render(path.join(__dirname, "/views/addImage.hbs"));
 });
 
-app.post("/images/add", upload.single("imageFile"), function(req, res) {
+app.post("/images/add", ensureLogin, upload.single("imageFile"), function(req, res) {
     res.redirect("/images");
 });
 
-app.get("/images", function(req, res) {
+app.get("/images", ensureLogin, function(req, res) {
 
     fs.readdir(__dirname + "/public/images/uploaded", function(err, items) {
         var imageObj = {};
@@ -289,15 +311,61 @@ app.get("/images", function(req, res) {
 });
 /******************/
 
+/***** LOGIN *****/
+app.get("/login", function(req, res) {
+    res.render(path.join(__dirname, "/views/login.hbs"));
+});
+app.post("/login", function(req, res) {
+    req.body.userAgent = req.get('User-Agent');
+    dataServiceAuth.checkUser(req.body)
+    .then((user) => {
+        req.session.user = {
+            userName: user.userName,
+            email: user.email,
+            loginHistory: user.loginHistory
+        }
+        res.redirect("/employees");
+    })
+    .catch((err) => {
+        res.render(path.join(__dirname, "/views/login.hbs"), {errorMessage: err, userName: req.body.userName});
+    });
+});
+
+app.get("/register", function(req, res) {
+    res.render(path.join(__dirname, "/views/register.hbs"));
+});
+app.post("/register", function(req, res) {
+    dataServiceAuth.registerUser(req.body)
+    .then(() => {
+        res.render(path.join(__dirname, "/views/register.hbs"), {successMessage: "User Created."});
+    })
+    .catch((err) => {
+        res.render(path.join(__dirname, "/views/register.hbs"), {errorMessage: err, userName: req.body.userName});
+    })
+});
+
+app.get("/logout", function(req, res) {
+    req.session.reset();
+    res.redirect("/");
+})
+
+app.get("/userHistory", ensureLogin, function(req, res) {
+    res.render(path.join(__dirname, "/views/userHistory.hbs"));
+})
+/*****************/
+
 //Handling any invalid route
 app.get("*", function(req, res) {
     res.sendFile(path.join(__dirname, "/views/404.html"));
 });
 
-app.listen(PORT, dataService.initialize().then((message) => {
-    console.log("\n" + message);
-    onStart();
-}).catch((err) => {
-    console.log(err);
+dataService.initialize()
+.then(dataServiceAuth.initialize()
+.then(() => {
+    app.listen(PORT, () => {
+        onStart();
+    });
+})
+.catch((err) => {
+    console.log("Unable to start server: " + err);
 }));
-
