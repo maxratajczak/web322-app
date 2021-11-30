@@ -73,32 +73,31 @@ module.exports = {
             .exec()
             .then((users) => {
                 var data = users.map(value => value.toObject());
-                var matched = false;
-                bcrypt.compare(userData.password, data[0].password).then((result) => {
-                    if(!result) {
-                        reject(`Incorrect password for user: ${userData.userName}`);
-                    }
-                });
 
                 if(data.length === 0) {
                     reject(`Unable to find user: ${userData.userName}`);
                 }
-                else {
-                    var login = {
-                        dateTime: (new Date()),
-                        userAgent: userData.userAgent
+                bcrypt.compare(userData.password, data[0].password).then((result) => {
+                    if(!result) {
+                        reject(`Incorrect password for user: ${userData.userName}`);
                     }
-                    data[0].loginHistory.push(login);
-
-                    User.updateOne({userName: data[0].userName}, {$set: {loginHistory: data[0].loginHistory}})
-                    .exec()
-                    .then(() => {
-                        resolve(data[0]);
-                    })
-                    .catch((err) => {
-                        reject(`There was an error verifying the user: ${err}`);
-                    });
-                }
+                    else {
+                        var login = {
+                            dateTime: (new Date()),
+                            userAgent: userData.userAgent
+                        }
+                        data[0].loginHistory.push(login);
+    
+                        User.updateOne({userName: data[0].userName}, {$set: {loginHistory: data[0].loginHistory}})
+                        .exec()
+                        .then(() => {
+                            resolve(data[0]);
+                        })
+                        .catch((err) => {
+                            reject(`There was an error verifying the user: ${err}`);
+                        });
+                    }
+                });  
             })
             .catch((err) => {
                 reject(`Unable to find user: ${userData.userName}`);
